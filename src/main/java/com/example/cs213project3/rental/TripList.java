@@ -1,5 +1,6 @@
 package com.example.cs213project3.rental;
 
+import com.example.cs213project3.Controller;
 import com.example.cs213project3.util.List;
 
 /**
@@ -23,18 +24,18 @@ public class TripList extends List<Node> {
      * @return integer length.
      */
     public static int getLength() {
-        if (Frontend.tripList.getLast() == null) {
+        if (Controller.tripList.getLast() == null) {
             return 0;
         }
 
-        if (Frontend.tripList.getLast() == Frontend.tripList.getLast().getNext()) {
+        if (Controller.tripList.getLast() == Controller.tripList.getLast().getNext()) {
             return 1;
         }
 
         int length = 1;
-        Node ptr = Frontend.tripList.getLast().getNext();
+        Node ptr = Controller.tripList.getLast().getNext();
 
-        while (ptr != Frontend.tripList.getLast()) {
+        while (ptr != Controller.tripList.getLast()) {
             length++;
             ptr = ptr.getNext();
         }

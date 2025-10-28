@@ -1,5 +1,7 @@
 package com.example.cs213project3.rental;
 
+import com.example.cs213project3.Controller;
+
 /**
  * Enum make that contains all the different makes of the vehicles
  * @author Lana Huang
@@ -33,7 +35,7 @@ public enum Make {
                 return true;
             }
             default -> {
-                Frontend.printInvalidMakeMessage(make);
+                Controller.printInvalidMakeMessage(make);
                 return false;
             }
         }

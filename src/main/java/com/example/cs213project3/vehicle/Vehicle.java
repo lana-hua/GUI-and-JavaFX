@@ -1,7 +1,7 @@
 package com.example.cs213project3.vehicle;
 
 import com.example.cs213project3.rental.Date;
-import com.example.cs213project3.rental.Frontend;
+import com.example.cs213project3.Controller;
 import com.example.cs213project3.rental.Make;
 import com.example.cs213project3.rental.Campus;
 
@@ -103,7 +103,7 @@ public abstract class Vehicle implements Comparable<Vehicle> {
             this.obtained = new Date(dataToken[2]);
             this.make = Make.valueOf(dataToken[3].toUpperCase());
             this.mileage = Integer.parseInt(dataToken[4]);
-            this.campus = Campus.valueOf(Frontend.capitalize(dataToken[5]));
+            this.campus = Campus.valueOf(Controller.capitalize(dataToken[5]));
         }
     }
 
@@ -140,7 +140,7 @@ public abstract class Vehicle implements Comparable<Vehicle> {
         } else if (!isValidPlate(dataToken[1])) {
             return false;
         } else if (!Campus.isValidCampus(dataToken[5])) {
-            Frontend.printInvalidBookingMessage("Campus Invalid Location", null, null, null, null, dataToken[5]);
+            Controller.printInvalidBookingMessage("Campus Invalid Location", null, null, null, null, dataToken[5]);
             return false;
         } else { return true; }
     }
@@ -154,20 +154,20 @@ public abstract class Vehicle implements Comparable<Vehicle> {
     public static boolean isValidPlate(String plate) {
         plate = plate.trim();
         if (plate.length() != 6){
-            Frontend.printInvalidPlateMessage("6 Character Error", plate);
+            Controller.printInvalidPlateMessage("6 Character Error", plate);
             return false;
         }
 
         for (int i = 0; i < plate.length()-1; i++) {
             if(!Character.isDigit(plate.charAt(i))){
-                Frontend.printInvalidPlateMessage("First 5 Numbers Error", plate);
+                Controller.printInvalidPlateMessage("First 5 Numbers Error", plate);
                 return false;
             }
         }
         String end = plate.substring(plate.length() - 1);
 
         if (!end.equals("S") && !end.equals("D") && !end.equals("X")){
-            Frontend.printInvalidPlateMessage("Not Valid Vehicle Type Error", plate);
+            Controller.printInvalidPlateMessage("Not Valid Vehicle Type Error", plate);
             return false;
         }
         return true;
@@ -186,11 +186,11 @@ public abstract class Vehicle implements Comparable<Vehicle> {
                 return true;
             }
             else {
-                Frontend.printInvalidMileageMessage("Invalid Num Mileage", null, int_mileage);
+                Controller.printInvalidMileageMessage("Invalid Num Mileage", null, int_mileage);
                 return false;
             }
         } catch (NumberFormatException e) {
-            Frontend.printInvalidMileageMessage("Invalid String Input", mileage, 0);
+            Controller.printInvalidMileageMessage("Invalid String Input", mileage, 0);
             return false;
         }
     }

@@ -1,5 +1,6 @@
 package com.example.cs213project3.rental;
 
+import com.example.cs213project3.Controller;
 import com.example.cs213project3.util.List;
 import com.example.cs213project3.vehicle.Sedan;
 import com.example.cs213project3.vehicle.Truck;
@@ -31,9 +32,9 @@ public class Fleet extends List<Vehicle> {
      * @return vehicle The vehicle found in the fleet returns null if it cannot find it.
      */
     public static Vehicle getVehicle(String plate) {
-        for (int i = 0; i < Frontend.fleet.size(); i++) {
-            if (Frontend.fleet.get(i).getPlate().equals(plate)) {
-                return Frontend.fleet.get(i);
+        for (int i = 0; i < Controller.fleet.size(); i++) {
+            if (Controller.fleet.get(i).getPlate().equals(plate)) {
+                return Controller.fleet.get(i);
             }
         }
         return null;
@@ -60,7 +61,7 @@ public class Fleet extends List<Vehicle> {
                         case "D" -> newVehicle = new Utility(dataToken);
                         case "S" -> newVehicle = new Sedan(dataToken);
                         default -> {
-                            Frontend.printLoadVehicleMessage("Unknown Vehicle Type", dataToken[1], 0);
+                            Controller.printLoadVehicleMessage("Unknown Vehicle Type", dataToken[1], 0);
                             return 0;
                         }
                     }
@@ -70,12 +71,12 @@ public class Fleet extends List<Vehicle> {
                     }
                 } else { return 0; }
             }
-            Frontend.printLoadVehicleMessage("Vehicles Loaded Message", null, numVehiclesLoaded);
+            Controller.printLoadVehicleMessage("Vehicles Loaded Message", null, numVehiclesLoaded);
             scanner.close();
             return numVehiclesLoaded;
         }
         catch (FileNotFoundException exception) {
-            Frontend.printLoadVehicleMessage("Text file not found", exception.getMessage(), 0);
+            Controller.printLoadVehicleMessage("Text file not found", exception.getMessage(), 0);
 
         }
         return null;

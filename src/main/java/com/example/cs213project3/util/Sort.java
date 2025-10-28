@@ -1,5 +1,6 @@
 package com.example.cs213project3.util;
 
+import com.example.cs213project3.Controller;
 import com.example.cs213project3.rental.*;
 import com.example.cs213project3.vehicle.Vehicle;
 
@@ -15,15 +16,15 @@ public class Sort {
      * PC Command: Prints the cost report, ordered by department, including the charge and surcharge for each trip, and the department total for all charges.
      */
     public static void printCost(){
-        if (Frontend.tripList.getLast() == null) {
-            Frontend.printCostMessage("Empty List", null, null, null, null);
+        if (Controller.tripList.getLast() == null) {
+            Controller.printCostMessage("Empty List", null, null, null, null);
             return;
         }
 
         Trip[] trips = getAllTrips();
         orderTripsByDept(trips, trips.length);
 
-        Frontend.printCostMessage("Start List", null, null, null, null);
+        Controller.printCostMessage("Start List", null, null, null, null);
         String currentDept = "";
         double deptTotal = 0.00;
 
@@ -31,27 +32,27 @@ public class Sort {
             String tripDept = trips[i].getBooking().getEmployee().getDepartment().toString();
             if (!tripDept.equals(currentDept)) {
                 if (!currentDept.isEmpty()){
-                    Frontend.printCostMessage("Department Total", null, null, deptTotal, null);
+                    Controller.printCostMessage("Department Total", null, null, deptTotal, null);
                     deptTotal = 0.00;
                 }
                 currentDept = tripDept;
-                Frontend.printCostMessage("Department Details", null, null, null, currentDept);
+                Controller.printCostMessage("Department Details", null, null, null, currentDept);
             }
 
             if (trips[i].hasSurcharge()){
                 double tripTotal = trips[i].getBooking().getVehicle().charge(trips[i].mileageUsed()) + trips[i].getBooking().getVehicle().surcharge(trips[i].mileageUsed(), trips[i].hasSurcharge());
                 deptTotal += tripTotal;
-                Frontend.printCostMessage("Surcharged Trip Details", trips, i,null, null);
-                Frontend.printCostMessage("Surcharged Cost Details", trips, i, tripTotal, null);
+                Controller.printCostMessage("Surcharged Trip Details", trips, i,null, null);
+                Controller.printCostMessage("Surcharged Cost Details", trips, i, tripTotal, null);
             }
             else {
                 deptTotal += trips[i].getBooking().getVehicle().charge(trips[i].mileageUsed());
-                Frontend.printCostMessage("Not Surcharged Trip Details", trips, i, null, null);
-                Frontend.printCostMessage("Not Surcharged Cost Details", trips, i, null, null);
+                Controller.printCostMessage("Not Surcharged Trip Details", trips, i, null, null);
+                Controller.printCostMessage("Not Surcharged Cost Details", trips, i, null, null);
             }
         }
-        Frontend.printCostMessage("Department Total", null, null, deptTotal, null);
-        Frontend.printCostMessage("End List", null, null, null, null);
+        Controller.printCostMessage("Department Total", null, null, deptTotal, null);
+        Controller.printCostMessage("End List", null, null, null, null);
     }
 
     /**
@@ -61,11 +62,11 @@ public class Sort {
      * Then it marks the node as visited and continues this process until all are printed.
      */
     public static void printCompletedTrips() {
-        if (Frontend.tripList.getLast() == null) {
-            Frontend.printTripsMessage("Empty List", null, null, null);
+        if (Controller.tripList.getLast() == null) {
+            Controller.printTripsMessage("Empty List", null, null, null);
             return;
         }
-        Frontend.printTripsMessage("Start List", null, null, null);
+        Controller.printTripsMessage("Start List", null, null, null);
 
         int length = TripList.getLength();
         Node ptr;
@@ -76,7 +77,7 @@ public class Sort {
             Node minNode = null;
             int minIndex = -1;
 
-            ptr = Frontend.tripList.getLast().getNext();
+            ptr = Controller.tripList.getLast().getNext();
             for (int j = 0; j < length; j++) {
                 if (!visited[j]) {
                     if (minNode == null || (ptr.getTrip().getBooking().getVehicle().getPlate().compareTo(minNode.getTrip().getBooking().getVehicle().getPlate()) < 0)) {
@@ -91,10 +92,10 @@ public class Sort {
                 }
                 ptr = ptr.getNext();
             }
-            Frontend.printTripsMessage("Trip Details", null, null, Sort.tripString(minNode));
+            Controller.printTripsMessage("Trip Details", null, null, Sort.tripString(minNode));
             visited[minIndex] = true;
         }
-        Frontend.printTripsMessage("End List", null, null, null);
+        Controller.printTripsMessage("End List", null, null, null);
     }
 
     /**
@@ -137,14 +138,14 @@ public class Sort {
      */
     private static Trip[] getAllTrips() {
         int length = 1;
-        Node ptr = Frontend.tripList.getLast().getNext();
-        while (ptr != Frontend.tripList.getLast()) {
+        Node ptr = Controller.tripList.getLast().getNext();
+        while (ptr != Controller.tripList.getLast()) {
             length++;
             ptr = ptr.getNext();
         }
 
         Trip[] trips = new Trip[length];
-        ptr = Frontend.tripList.getLast().getNext();
+        ptr = Controller.tripList.getLast().getNext();
         for (int i = 0; i < length; i++){
             trips[i] = ptr.getTrip();
             ptr = ptr.getNext();
@@ -157,15 +158,15 @@ public class Sort {
      * PR Command: Prints all reservations ordered by campus city location, then license plate number, and then by beginning date.
      */
     public static void printBookingsByCity() {
-        if (Frontend.bookings.isEmpty()) {
-            Frontend.printBookingsMessage("Empty List", null, null);
+        if (Controller.bookings.isEmpty()) {
+            Controller.printBookingsMessage("Empty List", null, null);
             return;
         }
 
-        for (int i = 0; i < (Frontend.bookings.size() - 1); i++) {
-            for (int j = 0; j < (Frontend.bookings.size() - i - 1); j++) {
-                String city1 = Frontend.bookings.get(j).getVehicle().getCampus().getCity();
-                String city2 = Frontend.bookings.get(j + 1).getVehicle().getCampus().getCity();
+        for (int i = 0; i < (Controller.bookings.size() - 1); i++) {
+            for (int j = 0; j < (Controller.bookings.size() - i - 1); j++) {
+                String city1 = Controller.bookings.get(j).getVehicle().getCampus().getCity();
+                String city2 = Controller.bookings.get(j + 1).getVehicle().getCampus().getCity();
 
                 int compareCampus = city1.compareTo(city2); //Compare by campus first
                 if (compareCampus > 0) {
@@ -173,15 +174,15 @@ public class Sort {
                 }
 
                 else if (city1.compareTo(city2) == 0) {
-                    String plate1 = Frontend.bookings.get(j).getVehicle().getPlate();
-                    String plate2 = Frontend.bookings.get(j + 1).getVehicle().getPlate();
+                    String plate1 = Controller.bookings.get(j).getVehicle().getPlate();
+                    String plate2 = Controller.bookings.get(j + 1).getVehicle().getPlate();
 
                     if (plate1.compareTo(plate2) > 0) {
                         swapBookings(j, (j + 1));
                     }
                     else if (plate1.compareTo(plate2) == 0) {
-                        Date begin1 = Frontend.bookings.get(j).getBegin();
-                        Date begin2 = Frontend.bookings.get(j + 1).getBegin();
+                        Date begin1 = Controller.bookings.get(j).getBegin();
+                        Date begin2 = Controller.bookings.get(j + 1).getBegin();
 
                         if (begin1.compareTo(begin2) > 0) {
                             swapBookings(j, (j + 1));
@@ -190,54 +191,54 @@ public class Sort {
                 }
             }
         }
-        Frontend.printBookingsMessage("Start City List", null, null);
-        for (int i = 0; i < Frontend.bookings.size(); i++) {
-            Frontend.printBookingsMessage("City Booking Details", Frontend.bookings.get(i).toString(), null);
+        Controller.printBookingsMessage("Start City List", null, null);
+        for (int i = 0; i < Controller.bookings.size(); i++) {
+            Controller.printBookingsMessage("City Booking Details", Controller.bookings.get(i).toString(), null);
         }
-        Frontend.printBookingsMessage("End List", null, null);
+        Controller.printBookingsMessage("End List", null, null);
     } //ordered by city, then plate, and then beginning date
 
     /**
      * PD Command: Prints all reservations ordered by department and then by employee.
      */
     public static void printBookingsByDept() {
-        if (Frontend.bookings.isEmpty()) {
-            Frontend.printBookingsMessage("Empty List", null, null);
+        if (Controller.bookings.isEmpty()) {
+            Controller.printBookingsMessage("Empty List", null, null);
             return;
         }
 
-        for (int i = 0; i < (Frontend.bookings.size() - 1); i++) {
-            for (int j = 0; j < (Frontend.bookings.size() - i - 1); j++) {
-                String dept1 = Frontend.bookings.get(j).getEmployee().getDepartment().toString();
-                String dept2 = Frontend.bookings.get(j + 1).getEmployee().getDepartment().toString();
+        for (int i = 0; i < (Controller.bookings.size() - 1); i++) {
+            for (int j = 0; j < (Controller.bookings.size() - i - 1); j++) {
+                String dept1 = Controller.bookings.get(j).getEmployee().getDepartment().toString();
+                String dept2 = Controller.bookings.get(j + 1).getEmployee().getDepartment().toString();
                 //sort departments
                 if (dept1.compareTo(dept2) > 0) {
-                    Booking temp = Frontend.bookings.get(j);
-                    Frontend.bookings.set(j, Frontend.bookings.get(j + 1));
-                    Frontend.bookings.set(j + 1, temp);
+                    Booking temp = Controller.bookings.get(j);
+                    Controller.bookings.set(j, Controller.bookings.get(j + 1));
+                    Controller.bookings.set(j + 1, temp);
                 } else if (dept1.compareTo(dept2) == 0) {
-                    String emp1 = Frontend.bookings.get(j).getEmployee().name();
-                    String emp2 = Frontend.bookings.get(j + 1).getEmployee().name();
+                    String emp1 = Controller.bookings.get(j).getEmployee().name();
+                    String emp2 = Controller.bookings.get(j + 1).getEmployee().name();
                     //sort employees in department
                     if (emp1.compareTo(emp2) > 0) {
-                        Booking temp = Frontend.bookings.get(j);
-                        Frontend.bookings.set(j, Frontend.bookings.get(j + 1));
-                        Frontend.bookings.set(j + 1, temp);
+                        Booking temp = Controller.bookings.get(j);
+                        Controller.bookings.set(j, Controller.bookings.get(j + 1));
+                        Controller.bookings.set(j + 1, temp);
                     }
                 }
             }
         }
-        Frontend.printBookingsMessage("Start Dept List", null, null);
+        Controller.printBookingsMessage("Start Dept List", null, null);
         String currentDept = "";
-        for (int i = 0; i < Frontend.bookings.size(); i++) {
-            String bookingDept = Frontend.bookings.get(i).getEmployee().getDepartment().toString();
+        for (int i = 0; i < Controller.bookings.size(); i++) {
+            String bookingDept = Controller.bookings.get(i).getEmployee().getDepartment().toString();
             if (!bookingDept.equals(currentDept)) {
                 currentDept = bookingDept;
-                Frontend.printBookingsMessage("Department Details", null, currentDept);
+                Controller.printBookingsMessage("Department Details", null, currentDept);
             }
-            Frontend.printBookingsMessage("Dept Booking Details", Frontend.bookings.get(i).toString(), null);
+            Controller.printBookingsMessage("Dept Booking Details", Controller.bookings.get(i).toString(), null);
         }
-        Frontend.printBookingsMessage("End List", null, null);
+        Controller.printBookingsMessage("End List", null, null);
     } //ordered by department then by employee
 
     /**
@@ -246,9 +247,9 @@ public class Sort {
      * @param j The index of the second booking to be swapped.
      */
     private static void swapBookings(int i, int j) {
-        Booking temp = Frontend.bookings.get(i);
-        Frontend.bookings.set(i, Frontend.bookings.get(j));
-        Frontend.bookings.set(j, temp);
+        Booking temp = Controller.bookings.get(i);
+        Controller.bookings.set(i, Controller.bookings.get(j));
+        Controller.bookings.set(j, temp);
     }
 
     /**
@@ -256,23 +257,23 @@ public class Sort {
      * Uses selection sort methods to loop through the fleet to find the minimum index of the minimum element.
      */
     public static void printSortedFleet() {
-        if (Frontend.fleet.isEmpty()) {
-            Frontend.printNoVehicleInFleet();
+        if (Controller.fleet.isEmpty()) {
+            Controller.printNoVehicleInFleet();
 
         } else {
-            Frontend.printFleetMessages("Start List", null);
-            for (int i = 0; i < Frontend.fleet.size() - 1; i++) {
+            Controller.printFleetMessages("Start List", null);
+            for (int i = 0; i < Controller.fleet.size() - 1; i++) {
                 int minIndex = i;
-                for (int j = i + 1; j < Frontend.fleet.size(); j++) {
-                    int compareCampus = Frontend.fleet.get(j).getCampus().getCity().compareTo(Frontend.fleet.get(minIndex).getCampus().getCity()); //Compare by campus first
+                for (int j = i + 1; j < Controller.fleet.size(); j++) {
+                    int compareCampus = Controller.fleet.get(j).getCampus().getCity().compareTo(Controller.fleet.get(minIndex).getCampus().getCity()); //Compare by campus first
                     if (compareCampus < 0) {
                         minIndex = j;
                     } else if (compareCampus == 0) {
-                        int compareMake = Frontend.fleet.get(j).getMake().compareTo(Frontend.fleet.get(minIndex).getMake()); //If campus is equal then compare by car make
+                        int compareMake = Controller.fleet.get(j).getMake().compareTo(Controller.fleet.get(minIndex).getMake()); //If campus is equal then compare by car make
                         if (compareMake < 0) {
                             minIndex = j;
                         } else if (compareMake == 0) {
-                            int compareDate = Frontend.fleet.get(j).getDate().compareTo(Frontend.fleet.get(minIndex).getDate()); //If car make is equal then compare by date
+                            int compareDate = Controller.fleet.get(j).getDate().compareTo(Controller.fleet.get(minIndex).getDate()); //If car make is equal then compare by date
                             if (compareDate < 0) {
                                 minIndex = j;
                             }
@@ -280,15 +281,15 @@ public class Sort {
                     }
                 }
                 if (minIndex != i) {
-                    Vehicle temp = Frontend.fleet.get(i);
-                    Frontend.fleet.set(i, Frontend.fleet.get(minIndex));
-                    Frontend.fleet.set(minIndex, temp);
+                    Vehicle temp = Controller.fleet.get(i);
+                    Controller.fleet.set(i, Controller.fleet.get(minIndex));
+                    Controller.fleet.set(minIndex, temp);
                 }
             }
-            for (int i = 0; i < Frontend.fleet.size(); i++) {
-                Frontend.printFleetMessages("Fleet Details", i);
+            for (int i = 0; i < Controller.fleet.size(); i++) {
+                Controller.printFleetMessages("Fleet Details", i);
             }
-            Frontend.printFleetMessages("End List", null);
+            Controller.printFleetMessages("End List", null);
         }
     }
 }

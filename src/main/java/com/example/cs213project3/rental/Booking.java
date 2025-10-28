@@ -1,5 +1,6 @@
 package com.example.cs213project3.rental;
 
+import com.example.cs213project3.Controller;
 import com.example.cs213project3.vehicle.Vehicle;
 
 /**
@@ -87,20 +88,20 @@ public class Booking {
         String dropoff = dataToken[5];
 
 
-        if (!Frontend.fleet.contains(Fleet.getVehicle(plate))) {
-            Frontend.printInvalidBookingMessage("Vehicle does not Exist Error", plate, null, null, null, null);
+        if (!Controller.fleet.contains(Fleet.getVehicle(plate))) {
+            Controller.printInvalidBookingMessage("Vehicle does not Exist Error", plate, null, null, null, null);
             return false;
         } else if (Reservation.isVehicleConflict(begin, end, plate)) {
-            Frontend.printInvalidBookingMessage("Vehicle not Available Error", plate, null, begin, end, null);
+            Controller.printInvalidBookingMessage("Vehicle not Available Error", plate, null, begin, end, null);
             return false;
         } else if (!Employee.isValidEmployee(employee)) {
-            Frontend.printInvalidBookingMessage("Employee not Eligible Error", null, employee, null,null, null);
+            Controller.printInvalidBookingMessage("Employee not Eligible Error", null, employee, null,null, null);
             return false;
         } else if (Reservation.isEmployeeConflict(begin, end, employee) != null) {
-            Frontend.printInvalidBookingMessage("Employee Conflict Error", null, employee, begin, end, null);
+            Controller.printInvalidBookingMessage("Employee Conflict Error", null, employee, begin, end, null);
             return false;
         } else if (!Campus.isValidCampus(dropoff)) {
-            Frontend.printInvalidBookingMessage("Campus Invalid Location", null, null, null, null, dropoff);
+            Controller.printInvalidBookingMessage("Campus Invalid Location", null, null, null, null, dropoff);
             return false;
         }
         return true;
@@ -118,18 +119,18 @@ public class Booking {
         if (!begin.isBookingDateValid("begin", begin)) {
             return false;
         } else if (!begin.isTodayOrFuture()) {
-            Frontend.printBeginDateErrorMessage("Today or Future Error", begin);
+            Controller.printBeginDateErrorMessage("Today or Future Error", begin);
             return false;
         } else if (!begin.isWithin3Months()) {
-            Frontend.printBeginDateErrorMessage("Beyond 3 Months Error", begin);
+            Controller.printBeginDateErrorMessage("Beyond 3 Months Error", begin);
             return false;
         } else if (!end.isBookingDateValid("end", end)) {
             return false;
         } else if (end.compareTo(begin) < 0) {
-            Frontend.printEndDateErrorMessage("Equal to or Later Error", begin, end);
+            Controller.printEndDateErrorMessage("Equal to or Later Error", begin, end);
             return false;
         } else if (!end.isWithin7Days(begin, end)) {
-            Frontend.printEndDateErrorMessage("More than a Week Error", begin, end);
+            Controller.printEndDateErrorMessage("More than a Week Error", begin, end);
             return false;
         }
         return true;

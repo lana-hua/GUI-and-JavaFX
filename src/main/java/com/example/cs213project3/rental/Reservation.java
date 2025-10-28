@@ -1,5 +1,6 @@
 package com.example.cs213project3.rental;
 
+import com.example.cs213project3.Controller;
 import com.example.cs213project3.util.List;
 
 /**
@@ -23,8 +24,8 @@ public class Reservation extends List<Booking> {
      * @return true if the vehicle is booked, false otherwise
      */
     public static boolean isVehicleBooked(String plate) {
-        for (int i = 0; i < Frontend.bookings.size(); i++) {
-            if (Frontend.bookings.get(i).getVehicle().getPlate().equals(plate)) {
+        for (int i = 0; i < Controller.bookings.size(); i++) {
+            if (Controller.bookings.get(i).getVehicle().getPlate().equals(plate)) {
                 return true;
             }
         }
@@ -38,9 +39,9 @@ public class Reservation extends List<Booking> {
      * @return the booking if found; return null otherwise
      */
     public static Booking findBookingForReturnVehicle(Date end, String plate){
-        for (int i = 0; i < Frontend.bookings.size(); i++) {
-            if ((Frontend.bookings.get(i).getEnd().equals(end) && (Frontend.bookings.get(i).getVehicle().getPlate().equals(plate)))) {
-                return Frontend.bookings.get(i);
+        for (int i = 0; i < Controller.bookings.size(); i++) {
+            if ((Controller.bookings.get(i).getEnd().equals(end) && (Controller.bookings.get(i).getVehicle().getPlate().equals(plate)))) {
+                return Controller.bookings.get(i);
             }
         }
         return null;
@@ -54,9 +55,9 @@ public class Reservation extends List<Booking> {
      * @return the booking if found, null otherwise
      */
     public static Booking findBookingForCancelBooking(Date begin, Date end, String plate){
-        for (int i = 0; i < Frontend.bookings.size(); i++) {
-            if ((Frontend.bookings.get(i).getBegin().equals(begin)) && (Frontend.bookings.get(i).getEnd().equals(end) && (Frontend.bookings.get(i).getVehicle().getPlate().equals(plate)))) {
-                return Frontend.bookings.get(i);
+        for (int i = 0; i < Controller.bookings.size(); i++) {
+            if ((Controller.bookings.get(i).getBegin().equals(begin)) && (Controller.bookings.get(i).getEnd().equals(end) && (Controller.bookings.get(i).getVehicle().getPlate().equals(plate)))) {
+                return Controller.bookings.get(i);
             }
         }
         return null;
@@ -70,8 +71,8 @@ public class Reservation extends List<Booking> {
      * @return true if there is a vehicle conflict; return false otherwise
      */
     public static boolean isVehicleConflict(Date begin, Date end, String plate) {
-        for (int i = 0; i < Frontend.bookings.size(); i++){
-            Booking existingBooking = Frontend.bookings.get(i);
+        for (int i = 0; i < Controller.bookings.size(); i++){
+            Booking existingBooking = Controller.bookings.get(i);
 
             if (existingBooking.getVehicle().getPlate().equals(plate)) {
                 Date existingBegin = existingBooking.getBegin();
@@ -95,8 +96,8 @@ public class Reservation extends List<Booking> {
      * @return the conflicting booking's begin date if conflict exists; return null otherwise
      */
     public static Booking isEmployeeConflict(Date begin, Date end, String employee) {
-        for (int i = 0; i < Frontend.bookings.size(); i++){
-            Booking existingBooking = Frontend.bookings.get(i);
+        for (int i = 0; i < Controller.bookings.size(); i++){
+            Booking existingBooking = Controller.bookings.get(i);
 
             if (existingBooking.getEmployee().name().equalsIgnoreCase(employee)) {
                 Date existingBegin = existingBooking.getBegin();
@@ -118,13 +119,13 @@ public class Reservation extends List<Booking> {
      * @return true if the return date is the earliest end date; return false otherwise
      */
     public static boolean isReturnEarliestEnd (Date returnDate){
-        if (Frontend.bookings.isEmpty()) {
+        if (Controller.bookings.isEmpty()) {
             return true;
         }
-        Date earliest = Frontend.bookings.get(0).getEnd();
+        Date earliest = Controller.bookings.get(0).getEnd();
 
-        for (int i = 1; i < Frontend.bookings.size(); i++) {
-            Date endDate = Frontend.bookings.get(i).getEnd();
+        for (int i = 1; i < Controller.bookings.size(); i++) {
+            Date endDate = Controller.bookings.get(i).getEnd();
             if (endDate.compareTo(earliest) < 0) {
                 earliest = endDate;
             }

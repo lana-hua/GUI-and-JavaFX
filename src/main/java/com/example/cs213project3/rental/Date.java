@@ -1,4 +1,5 @@
 package com.example.cs213project3.rental;
+import com.example.cs213project3.Controller;
 
 import java.util.Calendar;
 
@@ -58,7 +59,7 @@ public class Date implements Comparable<Date> {
 
         }
         else {
-            Frontend.printInvalidDate(dateInput);
+            Controller.printInvalidDate(dateInput);
         }
     }
 
@@ -135,10 +136,10 @@ public class Date implements Comparable<Date> {
     public boolean isBookingDateValid(String type, Date date) {
         if (!date.isValid()) {
             if (type == "begin") {
-                Frontend.printBeginDateErrorMessage("Valid Error", date);
+                Controller.printBeginDateErrorMessage("Valid Error", date);
                 return false;
             } else if (type == "end") {
-                Frontend.printEndDateErrorMessage("Valid Error", date, date);
+                Controller.printEndDateErrorMessage("Valid Error", date, date);
                 return false;
             }
         }
@@ -229,10 +230,10 @@ public class Date implements Comparable<Date> {
      */
     public boolean isCalendarDateValid(String date) {
         if (!isValid()){
-            Frontend.printInvalidDate(date);
+            Controller.printInvalidDate(date);
             return false;
         } else if ((isTodayOrFuture())) {
-            Frontend.printTodayOrFuture(date);
+            Controller.printTodayOrFuture(date);
             return false;
         }
         return true;
