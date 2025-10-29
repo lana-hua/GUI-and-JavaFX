@@ -1,22 +1,29 @@
 package com.example.cs213project3;
 
+import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
 import com.example.cs213project3.vehicle.*;
 import com.example.cs213project3.rental.*;
 import com.example.cs213project3.util.*;
+import javafx.stage.FileChooser;
+import javafx.stage.Stage;
 
+import java.io.File;
 import java.text.DecimalFormat;
 
 public class Controller {
     private static Controller instance;
+    @FXML private TextArea outputArea = new TextArea();
 
+    //Vehicle Management Tab
     @FXML private ComboBox<String> campusComboBox;
     @FXML private TextField mileageField;
     @FXML private TextField licensePlateField;
     @FXML private DatePicker dateObtainedField;
     @FXML private ToggleGroup vehicleTypeGroup;
-    @FXML private TextArea outputArea = new TextArea();
+
+    //Vehicle Reservation Tab
 
     public static Fleet fleet = new Fleet();
     public static Reservation bookings = new Reservation();
@@ -35,11 +42,6 @@ public class Controller {
         return instance;
     }
 
-    // Optional convenience method
-    public void appendOutput(String text) {
-        Controller.getInstance().outputArea.appendText("\n" + text);
-    }
-
     private String formatDate(String date) {
         String[] dataToken = date.split("-");
         return dataToken[1] + "/" + dataToken[2] + "/" + dataToken[0];
@@ -48,12 +50,19 @@ public class Controller {
     @FXML
     private void addToFleet() {
         try {
+            if(licensePlateField.getText() == null || dateObtainedField.getValue().toString() == null || mileageField.getText() == null || mileage == null || campusComboBox.getValue() == null) {
+                Controller.getInstance().outputArea.appendText("\nPlease fill out all information.");
+                return;
+            }
+
             String plate = licensePlateField.getText();
             String date = formatDate(dateObtainedField.getValue().toString());
             RadioButton selectedMake = (RadioButton) vehicleTypeGroup.getSelectedToggle();
             String make = selectedMake.getText();
             String mileage = mileageField.getText();
             String campus = campusComboBox.getValue();
+
+
 
             String[] dataToken = {"A", plate, date, make, mileage, campus};
 
@@ -79,6 +88,31 @@ public class Controller {
         } catch (Exception e) {
             Controller.getInstance().outputArea.appendText("\nError adding vehicle: " + e.getMessage());
         }
+    }
+
+    @FXML
+    private void loadVehicleButton() {
+        Fleet.loadVehicles(fleet, importFile());
+    }
+
+    @FXML
+    private String importFile() {
+        FileChooser chooser = new FileChooser();
+        chooser.setTitle("Open Source File for the Import");
+        chooser.getExtensionFilters().addAll(new FileChooser.ExtensionFilter("Text Files", "*.txt"),
+                new FileChooser.ExtensionFilter("All Files", "*.*"));
+        Stage stage = new Stage();
+        File sourceFile = chooser.showOpenDialog(stage); //get the reference of the source file
+        if (sourceFile != null) {
+            return sourceFile.getAbsolutePath();
+        } else {
+            return null;
+        }
+    }
+
+    @FXML
+    private void removeFromFleet() {
+
     }
 
     @FXML

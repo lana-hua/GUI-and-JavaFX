@@ -45,9 +45,9 @@ public class Fleet extends List<Vehicle> {
      * File needs to be placed in the top-level project folder.
      * Should not add the same vehicle if loaded twice.
      */
-    public static Integer loadVehicles(List<Vehicle> fleet) {
+    public static Integer loadVehicles(List<Vehicle> fleet, String path) {
         try {
-            File file = new File("vehicles.txt");
+            File file = new File(path);
             Scanner scanner = new Scanner(new File(file.toURI()));
             int numVehiclesLoaded = 0;
 
