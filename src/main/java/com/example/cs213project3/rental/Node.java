@@ -30,7 +30,7 @@ public class Node {
      * The next node reference is initialized to null.
      * @param trip The trip to be stored in this node.
      */
-    Node(Trip trip){
+    public Node(Trip trip){
         this.trip = trip;
         this.next = null;
     }

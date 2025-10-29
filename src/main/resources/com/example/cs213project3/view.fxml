@@ -319,7 +319,7 @@
                                     <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
                                  </padding>
                               </Label>
-                              <Button alignment="CENTER" contentDisplay="CENTER" mnemonicParsing="false" prefHeight="35.0" prefWidth="308.0" text="Complete This Trip!" GridPane.columnIndex="1" GridPane.rowIndex="3">
+                              <Button fx:id="completeTripButton" alignment="CENTER" contentDisplay="CENTER" mnemonicParsing="false" onAction="#returnVehicle" prefHeight="35.0" prefWidth="308.0" text="Complete This Trip!" GridPane.columnIndex="1" GridPane.rowIndex="3">
                                  <font>
                                     <Font name="Adelle Sans Devanagari Extrabold" size="13.0" />
                                  </font>
@@ -327,15 +327,15 @@
                                     <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
                                  </GridPane.margin>
                               </Button>
-                              <DatePicker prefHeight="26.0" prefWidth="323.0" GridPane.columnIndex="1">
+                              <DatePicker fx:id="vehicleReturnEndDate" prefHeight="26.0" prefWidth="323.0" GridPane.columnIndex="1">
                                  <GridPane.margin>
                                     <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
                                  </GridPane.margin></DatePicker>
-                              <ComboBox prefHeight="26.0" prefWidth="347.0" GridPane.columnIndex="1" GridPane.rowIndex="1">
+                              <ComboBox fx:id="vehicleReturnVehicle" prefHeight="26.0" prefWidth="347.0" promptText="Fleet" GridPane.columnIndex="1" GridPane.rowIndex="1">
                                  <GridPane.margin>
                                     <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
                                  </GridPane.margin></ComboBox>
-                              <TextField prefHeight="26.0" prefWidth="373.0" GridPane.columnIndex="1" GridPane.rowIndex="2">
+                              <TextField fx:id="vehicleReturnMileage" prefHeight="26.0" prefWidth="373.0" GridPane.columnIndex="1" GridPane.rowIndex="2">
                                  <GridPane.margin>
                                     <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
                                  </GridPane.margin></TextField>

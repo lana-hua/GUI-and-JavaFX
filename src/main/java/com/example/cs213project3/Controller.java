@@ -1,6 +1,5 @@
 package com.example.cs213project3;
 
-import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
 import com.example.cs213project3.vehicle.*;
@@ -25,6 +24,11 @@ public class Controller {
     @FXML private ToggleGroup vehicleTypeGroup;
 
     //Vehicle Reservation Tab
+
+    //Vehicle Return Tab
+    @FXML private DatePicker vehicleReturnEndDate;
+    @FXML public ComboBox<String> vehicleReturnVehicle;
+    @FXML private TextField vehicleReturnMileage;
 
     public static Fleet fleet = new Fleet();
     public static Reservation bookings = new Reservation();
@@ -84,6 +88,7 @@ public class Controller {
 
                 if (!fleet.contains(newVehicle)) {
                     fleet.add(newVehicle);
+                    vehicleReturnVehicle.getItems().addAll(newVehicle.getPlate());
                     String vehicleConfirmation = newVehicle.toString() + " has been added to the fleet.";
                     Controller.getInstance().outputArea.appendText("\n" + vehicleConfirmation);
                 }
@@ -139,6 +144,53 @@ public class Controller {
     }
 
     @FXML
+    private void returnVehicle() {
+        String plate = vehicleReturnVehicle.getValue();
+        String stringDate = String.valueOf(vehicleReturnEndDate.getValue());
+        String stringMileage = vehicleReturnMileage.getText();
+
+        if (plate == null || plate.isEmpty() || stringDate == null || stringMileage == null || stringMileage.isEmpty()) {
+            Controller.getInstance().outputArea.appendText("\nPlease fill out all information.");
+            return;
+        }
+        Date returnDate = new Date(formatDate(vehicleReturnEndDate.getValue().toString()));
+
+        if (Reservation.findBookingForReturnVehicle(returnDate, plate) == null) {
+            String cannotFindBookingMessage = plate + " booked with ending date " + returnDate + " - cannot find the booking.";
+            Controller.getInstance().outputArea.appendText("\n" + cannotFindBookingMessage);
+            return;
+
+        } else if (!Reservation.isReturnEarliestEnd(returnDate)) {
+            String notEarliestEndDateMessage = plate + " booked with end date " + returnDate + " - returning not in order of ending date.";
+            Controller.getInstance().outputArea.appendText("\n" + notEarliestEndDateMessage);
+            return;
+
+        } else if (!Vehicle.isValidMileage(stringMileage)) {
+            return;
+
+        } else if (Reservation.findBookingForReturnVehicle(returnDate, plate).getVehicle().getMileage() >= Integer.parseInt(stringMileage)) {
+            String invalidMileageMessage = "Invalid mileage - current mileage: " + Reservation.findBookingForReturnVehicle(returnDate, plate).getVehicle().getMileage() + " entered mileage: " + Integer.parseInt(stringMileage);
+            Controller.getInstance().outputArea.appendText("\n" + invalidMileageMessage);
+            return;
+
+        } else {
+            int mileage = Integer.parseInt(stringMileage);
+            Booking booking = Reservation.findBookingForReturnVehicle(returnDate, plate);
+
+            Trip newTrip = new Trip(booking, booking.getVehicle().getMileage(), mileage);
+            Node node = new Node(newTrip);
+            tripList.add(node);
+
+            Controller.getInstance().outputArea.appendText("\nTrip completed: " + newTrip.toString());
+
+            booking.getVehicle().setMileage(mileage);
+            booking.getVehicle().setCampus(booking.getCampusDropoff());
+            bookings.remove(booking);
+        }
+
+    }
+
+    @FXML
     private void printOption() {
         String printOption = printOptionComboBox.getValue();
         switch (printOption) {
@@ -149,8 +201,6 @@ public class Controller {
             case "Print Costs" -> Sort.printCost();
         }
     }
-
-
 
 
     @FXML
