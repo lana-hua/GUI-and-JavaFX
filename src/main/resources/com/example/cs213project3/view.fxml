@@ -233,13 +233,13 @@
                                     <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
                                  </padding>
                                  <children>
-                                    <ComboBox prefHeight="26.0" prefWidth="282.0" promptText="Fleet" />
+                                    <ComboBox fx:id="vehicleBookingVehicle" prefHeight="26.0" prefWidth="282.0" promptText="Fleet" />
                                     <Button mnemonicParsing="false" prefHeight="26.0" prefWidth="274.0" text="Load from Text File" />
                                  </children>
                               </HBox>
                               <HBox prefHeight="100.0" prefWidth="200.0" spacing="10.0" GridPane.columnIndex="1" GridPane.rowIndex="5">
                                  <children>
-                                    <Button mnemonicParsing="false" prefHeight="26.0" prefWidth="147.0" text="Book It">
+                                    <Button fx:id="bookingButton" mnemonicParsing="false" onAction="#bookVehicle" prefHeight="26.0" prefWidth="147.0" text="Book It">
                                        <font>
                                           <Font name="Adelle Sans Devanagari Extrabold" size="11.0" />
                                        </font>
@@ -254,22 +254,22 @@
                                     <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
                                  </padding>
                               </HBox>
-                              <DatePicker prefHeight="26.0" prefWidth="370.0" GridPane.columnIndex="1">
+                              <DatePicker fx:id="beginDateBooking" prefHeight="26.0" prefWidth="370.0" GridPane.columnIndex="1">
                                  <GridPane.margin>
                                     <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
                                  </GridPane.margin>
                               </DatePicker>
-                              <DatePicker prefHeight="26.0" prefWidth="325.0" GridPane.columnIndex="1" GridPane.rowIndex="1">
+                              <DatePicker fx:id="endDateBooking" prefHeight="26.0" prefWidth="325.0" GridPane.columnIndex="1" GridPane.rowIndex="1">
                                  <GridPane.margin>
                                     <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
                                  </GridPane.margin>
                               </DatePicker>
-                              <ComboBox prefHeight="26.0" prefWidth="352.0" GridPane.columnIndex="1" GridPane.rowIndex="3">
+                              <ComboBox fx:id="employeeBooking" prefHeight="26.0" prefWidth="352.0" GridPane.columnIndex="1" GridPane.rowIndex="3">
                                  <GridPane.margin>
                                     <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
                                  </GridPane.margin>
                               </ComboBox>
-                              <ComboBox prefHeight="26.0" prefWidth="391.0" GridPane.columnIndex="1" GridPane.rowIndex="4">
+                              <ComboBox fx:id="dropoffCampusBookingComboBox" prefHeight="26.0" prefWidth="391.0" GridPane.columnIndex="1" GridPane.rowIndex="4">
                                  <GridPane.margin>
                                     <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
                                  </GridPane.margin>
