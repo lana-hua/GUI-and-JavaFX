@@ -33,7 +33,9 @@ public class Controller {
     private void initialize() {
         instance = this;
         campusComboBox.getItems().addAll("Busch", "Livingston", "Cook", "Newark", "Camden");
-        Controller.getInstance().outputArea.setDisable(true);
+        outputArea.setWrapText(true);
+        outputArea.setPrefRowCount(10);
+        outputArea.setScrollTop(Double.MAX_VALUE);
         Controller.getInstance().outputArea.setText("Welcome to the Vehicle Management System");
     }
 
@@ -50,19 +52,19 @@ public class Controller {
     @FXML
     private void addToFleet() {
         try {
-            if(licensePlateField.getText() == null || dateObtainedField.getValue().toString() == null || mileageField.getText() == null || mileage == null || campusComboBox.getValue() == null) {
+            String plate = licensePlateField.getText();
+            String stringdate = String.valueOf(dateObtainedField.getValue());
+            RadioButton selectedMake = (RadioButton) vehicleTypeGroup.getSelectedToggle();
+            String mileage = mileageField.getText();
+            String campus = campusComboBox.getValue();
+
+            if (plate == null || plate.isEmpty() || stringdate == null || selectedMake == null || mileage == null || mileage.isEmpty() || campus == null || campus.isEmpty()) {
                 Controller.getInstance().outputArea.appendText("\nPlease fill out all information.");
                 return;
             }
 
-            String plate = licensePlateField.getText();
             String date = formatDate(dateObtainedField.getValue().toString());
-            RadioButton selectedMake = (RadioButton) vehicleTypeGroup.getSelectedToggle();
             String make = selectedMake.getText();
-            String mileage = mileageField.getText();
-            String campus = campusComboBox.getValue();
-
-
 
             String[] dataToken = {"A", plate, date, make, mileage, campus};
 
@@ -114,6 +116,12 @@ public class Controller {
     private void removeFromFleet() {
 
     }
+
+    @FXML
+    private void printFleet() {
+        Sort.printSortedFleet();
+    }
+
 
     @FXML
     public static void printNoVehicleInFleet() {

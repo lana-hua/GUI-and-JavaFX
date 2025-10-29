@@ -17,6 +17,7 @@
 <?import javafx.scene.layout.GridPane?>
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.RowConstraints?>
+<?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
 <BorderPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="650.0" prefWidth="475.0" xmlns="http://javafx.com/javafx/25" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.cs213project3.Controller">
@@ -345,13 +346,20 @@
             </Tab>
             <Tab text="Vehicle Reporting">
                <content>
-                  <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0" />
+                  <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
+                     <children>
+                        <VBox layoutX="188.0" layoutY="29.0" prefHeight="200.0" prefWidth="100.0">
+                           <children>
+                              <Button fx:id="printFleetButton" mnemonicParsing="false" onAction="#printFleet" prefHeight="36.0" prefWidth="115.0" text="Print Fleet" />
+                           </children>
+                        </VBox>
+                     </children></AnchorPane>
                </content>
             </Tab>
         </tabs>
       </TabPane>
    </center>
    <bottom>
-      <TextArea fx:id="outputArea" prefHeight="360.0" prefWidth="475.0" promptText="Output Area" BorderPane.alignment="CENTER" />
+      <TextArea fx:id="outputArea" editable="false" prefHeight="360.0" prefWidth="475.0" promptText="Output Area" wrapText="true" BorderPane.alignment="CENTER" />
    </bottom>
 </BorderPane>
