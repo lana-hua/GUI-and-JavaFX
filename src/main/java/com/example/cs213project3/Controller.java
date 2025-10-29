@@ -18,6 +18,7 @@ public class Controller {
 
     //Vehicle Management Tab
     @FXML private ComboBox<String> campusComboBox;
+    @FXML private ComboBox<String> printOptionComboBox;
     @FXML private TextField mileageField;
     @FXML private TextField licensePlateField;
     @FXML private DatePicker dateObtainedField;
@@ -33,6 +34,7 @@ public class Controller {
     private void initialize() {
         instance = this;
         campusComboBox.getItems().addAll("Busch", "Livingston", "Cook", "Newark", "Camden");
+        printOptionComboBox.getItems().addAll("Print Sorted Fleet", "Print Bookings by City", "Print Bookings by Dept", "Print Completed Trips", "Print Costs");
         outputArea.setWrapText(true);
         outputArea.setPrefRowCount(10);
         outputArea.setScrollTop(Double.MAX_VALUE);
@@ -85,8 +87,7 @@ public class Controller {
                     String vehicleConfirmation = newVehicle.toString() + " has been added to the fleet.";
                     Controller.getInstance().outputArea.appendText("\n" + vehicleConfirmation);
                 }
-
-            } else { return; }
+            }
         } catch (Exception e) {
             Controller.getInstance().outputArea.appendText("\nError adding vehicle: " + e.getMessage());
         }
@@ -114,13 +115,42 @@ public class Controller {
 
     @FXML
     private void removeFromFleet() {
+        try {
+            String plate = licensePlateField.getText();
 
+            if (Fleet.getVehicle(plate) != null) {
+                Vehicle temp = Fleet.getVehicle(plate);
+
+                if (!Reservation.isVehicleBooked(plate)) {
+                    fleet.remove(temp);
+                    Controller.getInstance().outputArea.appendText("\n" + plate + " has been removed from the fleet.");
+                } else {
+                    Controller.getInstance().outputArea.appendText("\n" + plate + " - has existing bookings; cannot be removed.");
+                }
+
+            } else {
+                Controller.getInstance().outputArea.appendText("\n" + plate + " is not in the fleet.");
+            }
+        } catch (Exception e) {
+            if (licensePlateField.getText().length() != 2) {
+                Controller.getInstance().outputArea.appendText("\nMissing data tokens for removing a vehicle.");
+            }
+        }
     }
 
     @FXML
-    private void printFleet() {
-        Sort.printSortedFleet();
+    private void printOption() {
+        String printOption = printOptionComboBox.getValue();
+        switch (printOption) {
+            case "Print Sorted Fleet" -> Sort.printSortedFleet();
+            case "Print Bookings by City" -> Sort.printBookingsByCity();
+            case "Print Bookings by Dept" -> Sort.printBookingsByDept();
+            case "Print Completed Trips" -> Sort.printCompletedTrips();
+            case "Print Costs" -> Sort.printCost();
+        }
     }
+
+
 
 
     @FXML
