@@ -23,7 +23,12 @@ public class Controller {
     @FXML private DatePicker dateObtainedField;
     @FXML private ToggleGroup vehicleTypeGroup;
 
-    //Vehicle Reservation Tab
+    // Booking & Reservation Management Tab
+    @FXML DatePicker beginDateBooking;
+    @FXML DatePicker endDateBooking;
+    @FXML ComboBox<String> employeeBooking;
+    @FXML ComboBox<String> dropoffCampusBookingComboBox;
+    @FXML public ComboBox<String> vehicleBookingVehicle;
 
     //Vehicle Return Tab
     @FXML private DatePicker vehicleReturnEndDate;
@@ -38,6 +43,8 @@ public class Controller {
     private void initialize() {
         instance = this;
         campusComboBox.getItems().addAll("Busch", "Livingston", "Cook", "Newark", "Camden");
+        dropoffCampusBookingComboBox.getItems().addAll("Busch", "Livingston", "Cook", "Newark", "Camden");
+        employeeBooking.getItems().addAll("Patel", "Lim", "Zimnes", "Harper", "Kaur", "Taylor", "Ramesh", "Ceravolo");
         printOptionComboBox.getItems().addAll("Print Sorted Fleet", "Print Bookings by City", "Print Bookings by Dept", "Print Completed Trips", "Print Costs");
         outputArea.setWrapText(true);
         outputArea.setPrefRowCount(10);
@@ -89,6 +96,7 @@ public class Controller {
                 if (!fleet.contains(newVehicle)) {
                     fleet.add(newVehicle);
                     vehicleReturnVehicle.getItems().addAll(newVehicle.getPlate());
+                    vehicleBookingVehicle.getItems().addAll(newVehicle.getPlate());
                     String vehicleConfirmation = newVehicle.toString() + " has been added to the fleet.";
                     Controller.getInstance().outputArea.appendText("\n" + vehicleConfirmation);
                 }
@@ -347,26 +355,22 @@ public class Controller {
         return string.substring(0, 1).toUpperCase() + string.substring(1).toLowerCase();
     }
 
-    // Booking & Reservation Management Tab
-    @FXML TextField beginDateField;
-    @FXML TextField endDateField;
-    @FXML TextField employeeField;
-    @FXML TextField reservationPlateField;
-    @FXML ComboBox<String> dropoffCampusComboBox;
-
     @FXML
     private void bookVehicle() {
         try {
-            String beginDate = beginDateField.getText().trim();
-            String endDate = endDateField.getText().trim();
-            String employee = employeeField.getText().trim();
-            String plate = reservationPlateField.getText().trim();
-            String dropoffCampus = dropoffCampusComboBox.getValue();
+            String beginDate = String.valueOf(beginDateBooking.getValue());
+            String endDate = String.valueOf(endDateBooking.getValue());
+            String employee = employeeBooking.getValue();
+            String plate = vehicleBookingVehicle.getValue();
+            String dropoffCampus = dropoffCampusBookingComboBox.getValue();
 
             if (beginDate.isEmpty() || endDate.isEmpty() || employee.isEmpty() || plate.isEmpty() || dropoffCampus == null) {
                 outputArea.appendText("\nPlease fill out all information.");
                 return;
             }
+
+            beginDate = formatDate(beginDateBooking.getValue().toString());
+            endDate = formatDate(endDateBooking.getValue().toString());
 
             String[] dataToken = {"B", beginDate, endDate, plate, employee, dropoffCampus};
 

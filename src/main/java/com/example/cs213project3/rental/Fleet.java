@@ -68,6 +68,7 @@ public class Fleet extends List<Vehicle> {
                     if (!fleet.contains(newVehicle)) {
                         fleet.add(newVehicle);
                         Controller.getInstance().vehicleReturnVehicle.getItems().addAll(newVehicle.getPlate());
+                        Controller.getInstance().vehicleBookingVehicle.getItems().addAll(newVehicle.getPlate());
                         numVehiclesLoaded++;
                     }
                 } else { return 0; }
