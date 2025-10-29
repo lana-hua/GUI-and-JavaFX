@@ -267,6 +267,45 @@ public class Controller {
         return string.substring(0, 1).toUpperCase() + string.substring(1).toLowerCase();
     }
 
+    // Booking & Reservation Management Tab
+    @FXML TextField beginDateField;
+    @FXML TextField endDateField;
+    @FXML TextField employeeField;
+    @FXML TextField reservationPlateField;
+    @FXML ComboBox<String> dropoffCampusComboBox;
 
+    @FXML
+    private void bookVehicle() {
+        try {
+            String beginDate = beginDateField.getText().trim();
+            String endDate = endDateField.getText().trim();
+            String employee = employeeField.getText().trim();
+            String plate = reservationPlateField.getText().trim();
+            String dropoffCampus = dropoffCampusComboBox.getValue();
 
+            if (beginDate.isEmpty() || endDate.isEmpty() || employee.isEmpty() || plate.isEmpty() || dropoffCampus == null) {
+                outputArea.appendText("\nPlease fill out all information.");
+                return;
+            }
+
+            String[] dataToken = {"B", beginDate, endDate, plate, employee, dropoffCampus};
+
+            if (Booking.isValidBookingDate(dataToken) && Booking.isValidBooking(dataToken)) {
+                Date begin = new Date(dataToken[1]);
+                Date end = new Date(dataToken[2]);
+                Vehicle vehicle = Fleet.getVehicle(plate);
+                Employee employeeName = Employee.valueOf(dataToken[4].substring(0, 1).toUpperCase() + dataToken[4].toLowerCase().substring(1));
+                Campus dropoff = Campus.valueOf(dataToken[5].substring(0, 1).toUpperCase() + dataToken[5].toLowerCase().substring(1));
+
+                Booking newBooking = new Booking(begin, end, vehicle, employeeName, dropoff);
+                bookings.add(newBooking);
+                String bookingConfirmation = newBooking.toString() + " booked.";
+                Controller.getInstance().outputArea.appendText("\n" + bookingConfirmation);
+            } else {
+                return;
+            }
+        } catch (Exception e) {
+            outputArea.appendText("\n Error booking vehicle: " + e.getMessage());
+        }
+    }
 }
