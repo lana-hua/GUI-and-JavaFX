@@ -234,7 +234,7 @@
                                  </padding>
                                  <children>
                                     <ComboBox fx:id="vehicleBookingVehicle" prefHeight="26.0" prefWidth="282.0" promptText="Fleet" />
-                                    <Button mnemonicParsing="false" prefHeight="26.0" prefWidth="274.0" text="Load from Text File" />
+                                    <Button fx:id="loadTextFile" mnemonicParsing="false" onAction="#loadVehicleButton" prefHeight="26.0" prefWidth="274.0" text="Load from Text File" />
                                  </children>
                               </HBox>
                               <HBox prefHeight="100.0" prefWidth="200.0" spacing="10.0" GridPane.columnIndex="1" GridPane.rowIndex="5">
