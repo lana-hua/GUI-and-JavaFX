@@ -244,7 +244,7 @@
                                           <Font name="Adelle Sans Devanagari Extrabold" size="11.0" />
                                        </font>
                                     </Button>
-                                    <Button mnemonicParsing="false" prefHeight="29.0" prefWidth="148.0" text="Cancel It">
+                                    <Button fx:id="cancelBookingButton" mnemonicParsing="false" onAction="#cancelBooking" prefHeight="29.0" prefWidth="148.0" text="Cancel It">
                                        <font>
                                           <Font name="Adelle Sans Devanagari Extrabold" size="11.0" />
                                        </font>
