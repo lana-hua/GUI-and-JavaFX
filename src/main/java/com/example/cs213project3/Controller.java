@@ -1,5 +1,6 @@
 package com.example.cs213project3;
 
+import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
 import com.example.cs213project3.vehicle.*;
@@ -63,7 +64,7 @@ public class Controller {
     }
 
     @FXML
-    private void addToFleet() {
+    private void addToFleet(ActionEvent event) {
         try {
             String plate = licensePlateField.getText();
             String stringdate = String.valueOf(dateObtainedField.getValue());
@@ -107,7 +108,7 @@ public class Controller {
     }
 
     @FXML
-    private void loadVehicleButton() {
+    private void loadVehicleButton(ActionEvent event) {
         Fleet.loadVehicles(fleet, importFile());
     }
 
@@ -127,9 +128,13 @@ public class Controller {
     }
 
     @FXML
-    private void removeFromFleet() {
+    private void removeFromFleet(ActionEvent event) {
         try {
             String plate = licensePlateField.getText();
+            if (plate == null || plate.isEmpty()) {
+                Controller.getInstance().outputArea.appendText("\nMissing data tokens for removing a vehicle.");
+                return;
+            }
 
             if (Fleet.getVehicle(plate) != null) {
                 Vehicle temp = Fleet.getVehicle(plate);
@@ -152,7 +157,71 @@ public class Controller {
     }
 
     @FXML
-    private void returnVehicle() {
+    private void bookVehicle() {
+        try {
+            String beginDate = String.valueOf(beginDateBooking.getValue());
+            String endDate = String.valueOf(endDateBooking.getValue());
+            String employee = employeeBooking.getValue();
+            String plate = vehicleBookingVehicle.getValue();
+            String dropoffCampus = dropoffCampusBookingComboBox.getValue();
+
+            if (beginDate.isEmpty() || endDate.isEmpty() || employee.isEmpty() || plate.isEmpty() || dropoffCampus == null) {
+                outputArea.appendText("\nPlease fill out all information.");
+                return;
+            }
+
+            beginDate = formatDate(beginDateBooking.getValue().toString());
+            endDate = formatDate(endDateBooking.getValue().toString());
+
+            String[] dataToken = {"B", beginDate, endDate, plate, employee, dropoffCampus};
+
+            if (Booking.isValidBookingDate(dataToken) && Booking.isValidBooking(dataToken)) {
+                Date begin = new Date(dataToken[1]);
+                Date end = new Date(dataToken[2]);
+                Vehicle vehicle = Fleet.getVehicle(plate);
+                Employee employeeName = Employee.valueOf(dataToken[4].substring(0, 1).toUpperCase() + dataToken[4].toLowerCase().substring(1));
+                Campus dropoff = Campus.valueOf(dataToken[5].substring(0, 1).toUpperCase() + dataToken[5].toLowerCase().substring(1));
+
+                Booking newBooking = new Booking(begin, end, vehicle, employeeName, dropoff);
+                bookings.add(newBooking);
+                String bookingConfirmation = newBooking.toString() + " booked.";
+                Controller.getInstance().outputArea.appendText("\n" + bookingConfirmation);
+            }
+        } catch (Exception e) {
+            outputArea.appendText("\n Error booking vehicle: " + e.getMessage());
+        }
+    }
+
+    @FXML
+    private void cancelBooking() {
+        String beginStringDate = String.valueOf(beginDateBooking.getValue());
+        String endStringDate = String.valueOf(endDateBooking.getValue());
+        String plate = vehicleBookingVehicle.getValue();
+
+        if (beginStringDate.isEmpty() || endStringDate.isEmpty() || plate.isEmpty()) {
+            outputArea.appendText("\nPlease fill out all information.");
+            return;
+        }
+
+        Date begin = new Date(formatDate(beginDateBooking.getValue().toString()));
+        Date end = new Date(formatDate(endDateBooking.getValue().toString()));
+
+        if (!begin.isValid() || !begin.isTodayOrFuture() || !end.isValid() || !end.isTodayOrFuture()){
+            printInvalidDate(plate);
+            return;
+        }
+        if (Reservation.findBookingForCancelBooking(begin, end, plate) == null){
+            printInvalidCancelBookingMessage(begin, end, plate);
+            return;
+        }
+        else if (Reservation.findBookingForCancelBooking(begin, end, plate) != null) {
+            bookings.remove(Reservation.findBookingForCancelBooking(begin, end, plate));
+            printValidCancelBookingMessage(begin, end, plate);
+        }
+    }
+
+    @FXML
+    private void returnVehicle(ActionEvent event) {
         String plate = vehicleReturnVehicle.getValue();
         String stringDate = String.valueOf(vehicleReturnEndDate.getValue());
         String stringMileage = vehicleReturnMileage.getText();
@@ -166,20 +235,14 @@ public class Controller {
         if (Reservation.findBookingForReturnVehicle(returnDate, plate) == null) {
             String cannotFindBookingMessage = plate + " booked with ending date " + returnDate + " - cannot find the booking.";
             Controller.getInstance().outputArea.appendText("\n" + cannotFindBookingMessage);
-            return;
 
         } else if (!Reservation.isReturnEarliestEnd(returnDate)) {
             String notEarliestEndDateMessage = plate + " booked with end date " + returnDate + " - returning not in order of ending date.";
             Controller.getInstance().outputArea.appendText("\n" + notEarliestEndDateMessage);
-            return;
-
-        } else if (!Vehicle.isValidMileage(stringMileage)) {
-            return;
 
         } else if (Reservation.findBookingForReturnVehicle(returnDate, plate).getVehicle().getMileage() >= Integer.parseInt(stringMileage)) {
             String invalidMileageMessage = "Invalid mileage - current mileage: " + Reservation.findBookingForReturnVehicle(returnDate, plate).getVehicle().getMileage() + " entered mileage: " + Integer.parseInt(stringMileage);
             Controller.getInstance().outputArea.appendText("\n" + invalidMileageMessage);
-            return;
 
         } else {
             int mileage = Integer.parseInt(stringMileage);
@@ -195,11 +258,10 @@ public class Controller {
             booking.getVehicle().setCampus(booking.getCampusDropoff());
             bookings.remove(booking);
         }
-
     }
 
     @FXML
-    private void printOption() {
+    private void printOption(ActionEvent event) {
         String printOption = printOptionComboBox.getValue();
         switch (printOption) {
             case "Print Sorted Fleet" -> Sort.printSortedFleet();
@@ -209,7 +271,6 @@ public class Controller {
             case "Print Costs" -> Sort.printCost();
         }
     }
-
 
     @FXML
     public static void printNoVehicleInFleet() {
@@ -353,43 +414,5 @@ public class Controller {
     public static String capitalize(String string) {
         if (string == null || string.isEmpty()) return string;
         return string.substring(0, 1).toUpperCase() + string.substring(1).toLowerCase();
-    }
-
-    @FXML
-    private void bookVehicle() {
-        try {
-            String beginDate = String.valueOf(beginDateBooking.getValue());
-            String endDate = String.valueOf(endDateBooking.getValue());
-            String employee = employeeBooking.getValue();
-            String plate = vehicleBookingVehicle.getValue();
-            String dropoffCampus = dropoffCampusBookingComboBox.getValue();
-
-            if (beginDate.isEmpty() || endDate.isEmpty() || employee.isEmpty() || plate.isEmpty() || dropoffCampus == null) {
-                outputArea.appendText("\nPlease fill out all information.");
-                return;
-            }
-
-            beginDate = formatDate(beginDateBooking.getValue().toString());
-            endDate = formatDate(endDateBooking.getValue().toString());
-
-            String[] dataToken = {"B", beginDate, endDate, plate, employee, dropoffCampus};
-
-            if (Booking.isValidBookingDate(dataToken) && Booking.isValidBooking(dataToken)) {
-                Date begin = new Date(dataToken[1]);
-                Date end = new Date(dataToken[2]);
-                Vehicle vehicle = Fleet.getVehicle(plate);
-                Employee employeeName = Employee.valueOf(dataToken[4].substring(0, 1).toUpperCase() + dataToken[4].toLowerCase().substring(1));
-                Campus dropoff = Campus.valueOf(dataToken[5].substring(0, 1).toUpperCase() + dataToken[5].toLowerCase().substring(1));
-
-                Booking newBooking = new Booking(begin, end, vehicle, employeeName, dropoff);
-                bookings.add(newBooking);
-                String bookingConfirmation = newBooking.toString() + " booked.";
-                Controller.getInstance().outputArea.appendText("\n" + bookingConfirmation);
-            } else {
-                return;
-            }
-        } catch (Exception e) {
-            outputArea.appendText("\n Error booking vehicle: " + e.getMessage());
-        }
     }
 }
