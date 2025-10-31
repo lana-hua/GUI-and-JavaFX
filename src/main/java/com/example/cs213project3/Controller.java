@@ -139,6 +139,8 @@ public class Controller {
                     vehicleBookingVehicle.getItems().addAll(newVehicle.getPlate());
                     String vehicleConfirmation = newVehicle.toString() + " has been added to the fleet.";
                     Controller.getInstance().outputArea.appendText("\n" + vehicleConfirmation);
+                } else {
+                    Controller.getInstance().outputArea.appendText("\nVehicle " + plate + " is already in fleet.");
                 }
             }
         } catch (Exception e) {
