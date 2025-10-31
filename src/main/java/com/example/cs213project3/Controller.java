@@ -196,6 +196,8 @@ public class Controller {
 
                 if (!Reservation.isVehicleBooked(plate)) {
                     fleet.remove(temp);
+                    Controller.getInstance().vehicleReturnVehicle.getItems().remove(plate);
+                    Controller.getInstance().vehicleBookingVehicle.getItems().remove(plate);
                     Controller.getInstance().outputArea.appendText("\n" + plate + " has been removed from the fleet.");
                 } else {
                     Controller.getInstance().outputArea.appendText("\n" + plate + " - has existing bookings; cannot be removed.");
